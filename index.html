@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CL Watch Later</title>
+<link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/b/b1/Google_Play_Video_icon_%282016%29.svg">
+
+<style>
+  :root { --accent-hue: 0; }
+  
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; color: #fff; overflow: hidden; background: #000; }
+
+  /* Layout */
+  #lock-screen, #main-site { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; transition: opacity 0.5s ease; }
+  #lock-screen { z-index: 9999; flex-direction: column; justify-content: center; align-items: center; background: #050505; }
+  #lock-screen.hidden { display: none; }
+  #main-site { z-index: 10; opacity: 0; pointer-events: none; flex-direction: row; }
+  #main-site.visible { opacity: 1; pointer-events: auto; }
+
+  /* Sidebar */
+  #sidebar { 
+    width: 280px; 
+    background: rgba(0, 0, 0, 0.5); 
+    backdrop-filter: blur(40px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05); 
+    padding: 25px 20px; 
+    display: flex; flex-direction: column; z-index: 20; 
+  }
+
+  .search-hub { display: flex; gap: 5px; position: relative; margin-bottom: 20px; }
+  .sidebar-input { flex: 1; background: rgba(255,255,255,0.05) !important; border-radius: 0px !important; padding: 10px !important; font-size: 11px !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; }
+  
+  .hub-dots-btn { 
+    background: hsla(var(--accent-hue), 100%, 50%, 0.1); 
+    border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.3);
+    color: white; width: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+
+  #global-menu { 
+    display: none; position: absolute; top: 45px; left: 0; width: 100%;
+    background: rgba(15, 15, 15, 0.98); backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.1); padding: 15px; z-index: 100;
+  }
+
+  #main { flex: 1; position: relative; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
+  .bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+  video.bg-video, .bg-img-div { width: 100%; height: 100%; object-fit: cover; position: absolute; display: none; }
+
+  /* SQUARE INPUTS */
+  input[type="text"], input[type="password"] { 
+    background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); 
+    color: #fff; padding: 12px 20px; font-size: 13px; outline: none; border-radius: 0px; 
+    transition: all 0.3s ease; backdrop-filter: blur(15px);
+  }
+
+  /* MIST BUTTONS */
+  .mist-btn { 
+    background: hsla(var(--accent-hue), 100%, 50%, 0.05); color: #fff; 
+    border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.2); 
+    cursor: pointer; font-weight: 700; font-size: 10px; text-transform: uppercase; 
+    border-radius: 0px; letter-spacing: 2px; transition: 0.3s; height: 44px; 
+    display: inline-flex; align-items: center; justify-content: center; backdrop-filter: blur(20px);
+  }
+  .mist-btn:hover:not(:disabled) { 
+    background: hsla(var(--accent-hue), 100%, 50%, 0.3); 
+    border-color: hsla(var(--accent-hue), 100%, 50%, 0.8);
+  }
+  .mist-btn:disabled { opacity: 0.15; cursor: default; }
+
+  /* GRID CARDS */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; flex: 1; }
+  .card { 
+    background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); 
+    border: 1px solid rgba(255, 255, 255, 0.05); padding: 18px; 
+    position: relative; cursor: pointer; transition: 0.3s; height: fit-content;
+  }
+  .card.active { border-color: hsla(var(--accent-hue), 100%, 50%, 0.6); background: rgba(255,255,255,0.05); box-shadow: 0 0 20px hsla(var(--accent-hue), 100%, 50%, 0.1); }
+  
+  .card-open-btn { 
+    background: hsla(var(--accent-hue), 100%, 50%, 0.2); border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.5);
+    color: white; padding: 6px 15px; font-size: 10px; font-weight: 900; cursor: pointer; margin-bottom: 12px;
+  }
+
+  .thumb-wrap { width: 100%; aspect-ratio: 16/9; background: #000; margin-bottom: 12px; border: 1px solid rgba(255, 255, 255, 0.03); overflow: hidden; }
+  .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+  .card-title { font-size: 13px; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Pagination UI */
+  .pagination-ctrl { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+  .counter-box { display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+  .page-num { font-size: 10px; letter-spacing: 3px; font-weight: 900; color: hsla(var(--accent-hue), 100%, 50%, 0.6); text-transform: uppercase; margin-bottom: 4px; }
+  .total-count { font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.3); font-weight: 400; transition: color 0.3s ease; }
+
+  .hue-slider { width: 100%; height: 4px; appearance: none; background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red); cursor: pointer; }
+  .menu-control-label { font-size: 8px; text-transform: uppercase; color: #666; margin: 12px 0 6px 0; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<input type="file" id="bg-file" style="display:none" accept="image/*,video/*">
+<input type="file" id="import-file" style="display:none" accept=".json">
+
+<div id="lock-screen">
+  <div class="bg-wrapper"><video id="lock-bg-video" class="bg-video" autoplay muted loop playsinline></video><div id="lock-bg-img" class="bg-img-div"></div></div>
+  <input type="password" id="password" placeholder="ACCESS KEY" style="width:260px; text-align:center; margin-bottom:15px;">
+  <button class="mist-btn" id="loginBtn" style="width:260px;">Unlock Archive</button>
+</div>
+
+<div id="main-site">
+  <div id="sidebar">
+    <h3 style="font-size: 9px; color: rgba(255,255,255,0.2); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 3px;">Archive Core</h3>
+    
+    <div class="search-hub">
+      <input type="text" id="archive-search" class="sidebar-input" placeholder="SEARCH...">
+      <button class="hub-dots-btn" onclick="toggleGlobalMenu(event)">⋮</button>
+      
+      <div id="global-menu">
+        <div class="menu-control-label">Mist Hue Control</div>
+        <input type="range" class="hue-slider" id="hue-slider" min="0" max="360" value="0">
+        
+        <div class="menu-control-label">Item Management</div>
+        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="renameActive()">Rename Item</button>
+        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px; border-color:rgba(255,50,50,0.4)" onclick="removeActive()">Delete Item</button>
+
+        <div class="menu-control-label">Data Transfer</div>
+        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="exportLibrary()">Export Archive</button>
+        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="document.getElementById('import-file').click()">Import Archive</button>
+      </div>
+    </div>
+
+    <div id="side-status" style="font-size: 10px; color: hsla(var(--accent-hue), 100%, 50%, 0.5); text-transform: uppercase;">Awaiting Input</div>
+    <button id="themeBtn" class="mist-btn" style="font-size: 8px; margin-top: auto; height: 35px;">Change Theme</button>
+  </div>
+
+  <div id="main">
+    <div class="bg-wrapper"><video id="bg-video" class="bg-video" autoplay muted loop playsinline></video><div id="bg-img" class="bg-img-div"></div></div>
+    <h1 style="font-size:18px; margin-bottom:40px; font-weight: 900; letter-spacing: 5px;">CL <span id="accent-title" style="color:hsla(var(--accent-hue), 100%, 50%, 0.6)">VAULT</span></h1>
+    
+    <div style="display:flex; gap:10px; margin-bottom:40px;">
+      <input type="text" id="url-input" style="flex:1;" placeholder="PASTE SOURCE LINK...">
+      <button class="mist-btn" id="addCardBtn" style="min-width:140px;">Add Card</button>
+    </div>
+
+    <div class="grid" id="video-grid"></div>
+
+    <div class="pagination-ctrl" id="pag-wrap">
+        <button class="mist-btn" id="prevPage" style="height:35px; width:110px;">Previous</button>
+        <div class="counter-box">
+            <div class="page-num" id="page-display">PG 1</div>
+            <div class="total-count" id="total-display">TOTAL: 0</div>
+        </div>
+        <button class="mist-btn" id="nextPage" style="height:35px; width:110px;">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const PASS = 'Prince2beast';
+    let library = JSON.parse(localStorage.getItem('cl_shortcut_lib')) || [];
+    let activeId = null;
+    let currentPage = 1;
+    const cardsPerPage = 8;
+
+    const urlInput = document.getElementById('url-input');
+    const addCardBtn = document.getElementById('addCardBtn');
+    const grid = document.getElementById('video-grid');
+    const searchInput = document.getElementById('archive-search');
+    const hueSlider = document.getElementById('hue-slider');
+    const totalDisplay = document.getElementById('total-display');
+
+    function setHue(val) {
+        document.documentElement.style.setProperty('--accent-hue', val);
+        localStorage.setItem('cl_hue', val);
+        hueSlider.value = val;
+        renderGrid();
+    }
+    setHue(localStorage.getItem('cl_hue') || 0);
+    hueSlider.oninput = (e) => setHue(e.target.value);
+
+    function renderGrid() {
+        grid.innerHTML = '';
+        const filter = searchInput.value.toLowerCase();
+        const filteredLib = library.filter(i => i.label.toLowerCase().includes(filter));
+        
+        const totalPages = Math.ceil(filteredLib.length / cardsPerPage) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * cardsPerPage;
+        const end = start + cardsPerPage;
+        const pageItems = filteredLib.slice(start, end);
+
+        pageItems.forEach(item => {
+            const card = document.createElement('div');
+            card.className = `card ${item.id === activeId ? 'active' : ''}`;
+            card.onclick = () => { activeId = item.id; renderGrid(); };
+            card.innerHTML = `
+                <button class="card-open-btn" onclick="window.open('${item.url}', '_blank')">OPEN</button>
+                <div class="thumb-wrap"><img src="${item.thumb}" onerror="this.src='https://via.placeholder.com/320x180/111/fff?text=Link'"></div>
+                <div class="card-title">${item.label}</div>
+            `;
+            grid.appendChild(card);
+        });
+
+        document.getElementById('page-display').innerText = `PG ${currentPage} / ${totalPages}`;
+        totalDisplay.innerText = `TOTAL: ${library.length}`;
+        document.getElementById('prevPage').disabled = (currentPage === 1);
+        document.getElementById('nextPage').disabled = (currentPage === totalPages);
+        document.getElementById('pag-wrap').style.display = (library.length === 0) ? 'none' : 'flex';
+
+        const activeObj = library.find(x => x.id === activeId);
+        document.getElementById('side-status').innerText = activeObj ? `ACTIVE: ${activeObj.label}` : "AWAITING INPUT";
+    }
+
+    addCardBtn.onclick = () => {
+        let rawUrl = urlInput.value.trim();
+        if(!rawUrl) return;
+        if (!/^https?:\/\//i.test(rawUrl)) rawUrl = 'https://' + rawUrl;
+        try {
+            const urlObj = new URL(rawUrl);
+            let siteName = urlObj.hostname.replace('www.', '').split('.')[0];
+            const ytMatch = rawUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+            const thumb = ytMatch ? `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg` : `https://www.google.com/s2/favicons?sz=128&domain=${urlObj.hostname}`;
+            library.unshift({ id: Date.now(), url: rawUrl, thumb: thumb, label: siteName });
+            localStorage.setItem('cl_shortcut_lib', JSON.stringify(library));
+            totalDisplay.style.color = "white";
+            setTimeout(() => totalDisplay.style.color = "", 500);
+            urlInput.value = "";
+            currentPage = 1;
+            renderGrid();
+        } catch(e) { alert("Invalid URL Format"); }
+    };
+
+    window.exportLibrary = () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(library));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "cl_archive_backup.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    };
+
+    document.getElementById('import-file').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const importedData = JSON.parse(event.target.result);
+                if (Array.isArray(importedData)) {
+                    library = importedData;
+                    localStorage.setItem('cl_shortcut_lib', JSON.stringify(library));
+                    renderGrid();
+                    alert("Archive Imported Successfully");
+                }
+            } catch (err) { alert("Invalid File Format"); }
+        };
+        reader.readAsText(file);
+    };
+
+    document.getElementById('prevPage').onclick = () => { if(currentPage > 1) { currentPage--; renderGrid(); } };
+    document.getElementById('nextPage').onclick = () => { 
+        const totalPages = Math.ceil(library.length / cardsPerPage);
+        if(currentPage < totalPages) { currentPage++; renderGrid(); } 
+    };
+
+    urlInput.onkeypress = (e) => { if(e.key === 'Enter') addCardBtn.click(); };
+    window.toggleGlobalMenu = (e) => { e.stopPropagation(); const m = document.getElementById('global-menu'); m.style.display = m.style.display === 'block' ? 'none' : 'block'; };
+    window.renameActive = () => { if(!activeId) return; const n = prompt("Rename to:"); if(n) { library.find(x => x.id === activeId).label = n; localStorage.setItem('cl_shortcut_lib', JSON.stringify(library)); renderGrid(); } };
+    window.removeActive = () => { if(!activeId || !confirm("Erase entry?")) return; library = library.filter(x => x.id !== activeId); localStorage.setItem('cl_shortcut_lib', JSON.stringify(library)); activeId = null; renderGrid(); };
+    searchInput.oninput = () => { currentPage = 1; renderGrid(); };
+    window.onclick = () => document.getElementById('global-menu').style.display = 'none';
+
+    document.getElementById('loginBtn').onclick = () => {
+        if(document.getElementById('password').value === PASS) {
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-site').classList.add('visible');
+            renderGrid();
+        }
+    };
+
+    const fileIn = document.getElementById('bg-file');
+    document.getElementById('themeBtn').onclick = () => fileIn.click();
+    fileIn.onchange = (e) => {
+        const file = e.target.files[0];
+        const r = new FileReader();
+        r.onload = (ev) => {
+            const isVid = file.type.includes('video');
+            applyTheme(ev.target.result, isVid);
+            localStorage.setItem('cl_shortcut_bg', ev.target.result);
+            localStorage.setItem('cl_shortcut_bg_type', isVid ? 'v' : 'i');
+        };
+        r.readAsDataURL(file);
+    };
+
+    function applyTheme(data, isVid) {
+        const v = [document.getElementById('bg-video'), document.getElementById('lock-bg-video')];
+        const i = [document.getElementById('bg-img'), document.getElementById('lock-bg-img')];
+        if(isVid) {
+            i.forEach(x => x.style.display = 'none');
+            v.forEach(x => { x.style.display = 'block'; x.src = data; });
+        } else {
+            v.forEach(x => x.style.display = 'none');
+            i.forEach(x => { x.style.display = 'block'; x.style.backgroundImage = `url(${data})`; });
+        }
+    }
+    const saved = localStorage.getItem('cl_shortcut_bg');
+    if(saved) applyTheme(saved, localStorage.getItem('cl_shortcut_bg_type') === 'v');
+});
+</script>
+</body>
+</html>
