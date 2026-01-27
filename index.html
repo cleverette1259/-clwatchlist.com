@@ -171,6 +171,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const hueSlider = document.getElementById('hue-slider');
     const totalDisplay = document.getElementById('total-display');
 
+    // --- INDEXED DB FOR LARGE BACKGROUNDS ---
+    let db;
+    const dbReq = indexedDB.open("VaultMediaDB", 1);
+    dbReq.onupgradeneeded = (e) => {
+        db = e.target.result;
+        if (!db.objectStoreNames.contains("media")) db.createObjectStore("media");
+    };
+    dbReq.onsuccess = (e) => {
+        db = e.target.result;
+        loadSavedBackground();
+    };
+
+    function saveBackgroundToDB(data, type) {
+        const tx = db.transaction("media", "readwrite");
+        tx.objectStore("media").put({ data, type }, "currentBG");
+    }
+
+    function loadSavedBackground() {
+        const tx = db.transaction("media", "readonly");
+        const getReq = tx.objectStore("media").get("currentBG");
+        getReq.onsuccess = () => {
+            if (getReq.result) applyTheme(getReq.result.data, getReq.result.type === 'v');
+        };
+    }
+    // -----------------------------------------
+
     function setHue(val) {
         document.documentElement.style.setProperty('--accent-hue', val);
         localStorage.setItem('cl_hue', val);
@@ -225,22 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const thumb = ytMatch ? `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg` : `https://www.google.com/s2/favicons?sz=128&domain=${urlObj.hostname}`;
             library.unshift({ id: Date.now(), url: rawUrl, thumb: thumb, label: siteName });
             localStorage.setItem('cl_shortcut_lib', JSON.stringify(library));
-            totalDisplay.style.color = "white";
-            setTimeout(() => totalDisplay.style.color = "", 500);
-            urlInput.value = "";
-            currentPage = 1;
             renderGrid();
+            urlInput.value = "";
         } catch(e) { alert("Invalid URL Format"); }
     };
 
     window.exportLibrary = () => {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(library));
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "cl_archive_backup.json");
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
+        const a = document.createElement('a');
+        a.href = dataStr; a.download = "cl_archive_backup.json"; a.click();
     };
 
     document.getElementById('import-file').onchange = (e) => {
@@ -254,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     library = importedData;
                     localStorage.setItem('cl_shortcut_lib', JSON.stringify(library));
                     renderGrid();
-                    alert("Archive Imported Successfully");
                 }
             } catch (err) { alert("Invalid File Format"); }
         };
@@ -286,12 +304,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('themeBtn').onclick = () => fileIn.click();
     fileIn.onchange = (e) => {
         const file = e.target.files[0];
+        if (!file) return;
         const r = new FileReader();
         r.onload = (ev) => {
             const isVid = file.type.includes('video');
             applyTheme(ev.target.result, isVid);
-            localStorage.setItem('cl_shortcut_bg', ev.target.result);
-            localStorage.setItem('cl_shortcut_bg_type', isVid ? 'v' : 'i');
+            saveBackgroundToDB(ev.target.result, isVid ? 'v' : 'i');
         };
         r.readAsDataURL(file);
     };
@@ -307,8 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
             i.forEach(x => { x.style.display = 'block'; x.style.backgroundImage = `url(${data})`; });
         }
     }
-    const saved = localStorage.getItem('cl_shortcut_bg');
-    if(saved) applyTheme(saved, localStorage.getItem('cl_shortcut_bg_type') === 'v');
 });
 </script>
 </body>
