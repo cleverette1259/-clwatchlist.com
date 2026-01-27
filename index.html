@@ -3,283 +3,281 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CL Watch Later</title>
-<link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/b/b1/Google_Play_Video_icon_%282016%29.svg">
-
+<title>CL Vault: Final Fix</title>
 <style>
   :root { --accent-hue: 0; }
   * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; color: #fff; overflow: hidden; background: #000; }
+  body { font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; color: #fff; overflow: hidden; background: #000; display: flex; }
 
-  /* Layout */
-  #lock-screen, #main-site { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; transition: opacity 0.5s ease; }
-  #lock-screen { z-index: 9999; flex-direction: column; justify-content: center; align-items: center; background: #050505; }
-  #lock-screen.hidden { display: none; }
-  #main-site { z-index: 10; opacity: 0; pointer-events: none; flex-direction: row; }
-  #main-site.visible { opacity: 1; pointer-events: auto; }
-
-  /* Sidebar */
-  #sidebar { 
-    width: 280px; 
-    background: rgba(0, 0, 0, 0.5); 
-    backdrop-filter: blur(40px);
-    border-right: 1px solid rgba(255, 255, 255, 0.05); 
-    padding: 25px 20px; 
-    display: flex; flex-direction: column; z-index: 20; 
-  }
-
-  .search-hub { display: flex; gap: 5px; position: relative; margin-bottom: 20px; }
-  .sidebar-input { flex: 1; background: rgba(255,255,255,0.05) !important; border-radius: 0px !important; padding: 10px !important; font-size: 11px !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; }
-  
-  .hub-dots-btn { 
-    background: hsla(var(--accent-hue), 100%, 50%, 0.1); 
-    border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.3);
-    color: white; width: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px;
-  }
-
-  #global-menu { 
-    display: none; position: absolute; top: 45px; left: 0; width: 100%;
-    background: rgba(15, 15, 15, 0.98); backdrop-filter: blur(30px);
-    border: 1px solid rgba(255,255,255,0.1); padding: 15px; z-index: 100;
-  }
-
-  #main { flex: 1; position: relative; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
-  .bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
-  video.bg-video, .bg-img-div { width: 100%; height: 100%; object-fit: cover; position: absolute; display: none; }
-
-  /* Buttons & Inputs */
-  input[type="text"], input[type="password"] { 
-    background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); 
-    color: #fff; padding: 12px 20px; font-size: 13px; outline: none; border-radius: 0px; 
-    transition: all 0.3s ease; backdrop-filter: blur(15px);
-  }
-
+  /* --- UI Elements --- */
   .mist-btn { 
-    background: hsla(var(--accent-hue), 100%, 50%, 0.05); color: #fff; 
-    border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.2); 
-    cursor: pointer; font-weight: 700; font-size: 10px; text-transform: uppercase; 
-    border-radius: 0px; letter-spacing: 2px; transition: 0.3s; height: 44px; 
-    display: inline-flex; align-items: center; justify-content: center; backdrop-filter: blur(20px);
+    background: hsla(var(--accent-hue), 100%, 50%, 0.1); 
+    color: #fff; border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.3); 
+    cursor: pointer; font-size: 10px; padding: 10px; text-transform: uppercase; transition: 0.2s; 
   }
-  .mist-btn:hover:not(:disabled) { 
-    background: hsla(var(--accent-hue), 100%, 50%, 0.3); 
-    border-color: hsla(var(--accent-hue), 100%, 50%, 0.8);
+  .mist-btn:hover { 
+    background: hsla(var(--accent-hue), 100%, 50%, 0.2); 
+    border-color: hsla(var(--accent-hue), 100%, 50%, 1); 
   }
 
-  /* Grid & Cards */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; flex: 1; }
-  .card { 
-    background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); 
-    border: 1px solid rgba(255, 255, 255, 0.05); padding: 18px; 
-    position: relative; cursor: pointer; transition: 0.3s; height: fit-content;
+  /* --- "NEW" Badge Style --- */
+  .new-badge {
+    font-size: 7px; background: hsla(var(--accent-hue), 100%, 50%, 1);
+    color: #000; padding: 1px 4px; border-radius: 2px; font-weight: 900;
+    margin-left: 8px; box-shadow: 0 0 8px hsla(var(--accent-hue), 100%, 50%, 0.5);
   }
-  .card.active { border-color: hsla(var(--accent-hue), 100%, 50%, 0.6); background: rgba(255,255,255,0.05); }
+
+  /* --- Sidebars & Input --- */
+  #sidebar-left { width: 60px; background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 20px; z-index: 500; }
+  #sidebar-right { width: 320px; background: rgba(0,0,0,0.85); backdrop-filter: blur(30px); border-left: 1px solid rgba(255,255,255,0.1); padding: 20px; display: flex; flex-direction: column; gap: 25px; overflow-y: auto; z-index: 400; }
   
-  .card-open-btn { 
-    background: hsla(var(--accent-hue), 100%, 50%, 0.2); border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.5);
-    color: white; padding: 6px 15px; font-size: 10px; font-weight: 900; cursor: pointer; margin-bottom: 12px;
+  #url-input { 
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+    color: #fff; padding: 12px; font-size: 11px; outline: none; 
+    font-family: 'Courier New', Courier, monospace; letter-spacing: 1px; transition: 0.3s;
   }
+  #url-input:focus { border-color: hsla(var(--accent-hue), 100%, 50%, 0.8); box-shadow: 0 0 10px hsla(var(--accent-hue), 100%, 50%, 0.2); }
 
-  .thumb-wrap { width: 100%; aspect-ratio: 16/9; background: #000; margin-bottom: 12px; border: 1px solid rgba(255, 255, 255, 0.03); overflow: hidden; }
-  .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-  .card-title { font-size: 13px; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  /* --- Folders & Grid --- */
+  .folder-header { padding: 12px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .folder-name-group { cursor: pointer; display: flex; align-items: center; gap: 10px; flex: 1; }
+  .folder-content { display: none; padding: 10px 0; }
+  .folder-content.open { display: block; }
+  .folder-link-item { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 4px; margin-bottom: 8px; position: relative; border: 1px solid rgba(255,255,255,0.05); }
 
-  .pagination-ctrl { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
-  .page-num { font-size: 10px; letter-spacing: 3px; font-weight: 900; color: hsla(var(--accent-hue), 100%, 50%, 0.6); text-transform: uppercase; }
-  .hue-slider { width: 100%; height: 4px; appearance: none; background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red); cursor: pointer; }
-  .menu-control-label { font-size: 8px; text-transform: uppercase; color: #666; margin: 12px 0 6px 0; letter-spacing: 1px; }
+  #main-content { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
+  #video-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:20px; }
+  .card { background: rgba(255,255,255,0.03); padding: 15px; border: 1px solid rgba(255,255,255,0.08); position: relative; }
+  .card-dots { position: absolute; top: 4px; right: 2px; cursor: pointer; opacity: 0.3; font-size: 14px; z-index: 10; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+
+  /* --- Menus --- */
+  .context-menu { position: absolute; background: #111; border: 1px solid #333; z-index: 3000; display: none; width: 160px; border-radius: 4px; }
+  .menu-item { position: relative; padding: 10px; font-size: 9px; text-transform: uppercase; cursor: pointer; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+  .menu-item:hover { background: hsla(var(--accent-hue), 100%, 50%, 0.2); }
+  .submenu-inner { position: absolute; left: 100%; top: 0; background: #111; border: 1px solid #333; width: 150px; display: none; z-index: 3100; max-height: 200px; overflow-y: auto; }
+  .menu-item:hover > .submenu-inner { display: block; }
+
+  /* --- Lock & BG --- */
+  #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #050505; transition: 0.8s; }
+  #lock-screen.hidden { opacity: 0; pointer-events: none; }
+  #password { background:#000; border:1px solid rgba(255,255,255,0.1); color:#fff; padding: 12px; text-align:center; outline:none; margin-bottom:10px; width:220px; }
+  .bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+  video.bg-video, .bg-img-div { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; display: none; opacity: 0; transition: opacity 1s; }
+  .bg-visible { opacity: 1 !important; display: block !important; }
 </style>
 </head>
-<body>
-
-<input type="file" id="bg-file-main" style="display:none" accept="image/*,video/*">
-<input type="file" id="bg-file-lock" style="display:none" accept="image/*,video/*">
-<input type="file" id="import-file" style="display:none" accept=".json">
+<body onclick="closeAllMenus()">
 
 <div id="lock-screen">
-  <div class="bg-wrapper">
-    <video id="lock-bg-video" class="bg-video" autoplay muted loop playsinline></video>
-    <div id="lock-bg-img" class="bg-img-div"></div>
-  </div>
-  <h2 style="font-size: 10px; letter-spacing: 5px; color: rgba(255,255,255,0.3); margin-bottom: 20px;">SYSTEM LOCKED</h2>
-  <input type="password" id="password" placeholder="ACCESS KEY" style="width:260px; text-align:center; margin-bottom:15px;">
-  <button class="mist-btn" id="loginBtn" style="width:260px;">Unlock Archive</button>
+  <div class="bg-wrapper"><video id="lock-bg-video" class="bg-video" autoplay muted loop playsinline></video><div id="lock-bg-img" class="bg-img-div"></div></div>
+  <input type="password" id="password" placeholder="ACCESS KEY">
+  <button class="mist-btn" id="loginBtn" style="width:220px;">Unlock</button>
 </div>
 
-<div id="main-site">
-  <div id="sidebar">
-    <h3 style="font-size: 9px; color: rgba(255,255,255,0.2); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 3px;">Archive Core</h3>
-    
-    <div class="search-hub">
-      <input type="text" id="archive-search" class="sidebar-input" placeholder="SEARCH...">
-      <button class="hub-dots-btn" onclick="toggleGlobalMenu(event)">⋮</button>
-      
-      <div id="global-menu">
-        <div class="menu-control-label">Mist Hue Control</div>
-        <input type="range" class="hue-slider" id="hue-slider" min="0" max="360" value="0">
-        
-        <div class="menu-control-label">Layout Customization</div>
-        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="document.getElementById('bg-file-lock').click()">Change Lock Theme</button>
-        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="document.getElementById('bg-file-main').click()">Change Main Theme</button>
-
-        <div class="menu-control-label">Item Management</div>
-        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="renameActive()">Rename Item</button>
-        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px; border-color:rgba(255,50,50,0.4)" onclick="removeActive()">Delete Item</button>
-
-        <div class="menu-control-label">Data Transfer</div>
-        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="exportLibrary()">Export Archive</button>
-        <button class="mist-btn" style="width:100%; height:30px; margin-top:5px; font-size:8px;" onclick="document.getElementById('import-file').click()">Import Archive</button>
-      </div>
-    </div>
-
-    <div id="side-status" style="font-size: 10px; color: hsla(var(--accent-hue), 100%, 50%, 0.5); text-transform: uppercase;">Awaiting Input</div>
-    <div style="margin-top:auto; font-size: 8px; color: rgba(255,255,255,0.1); text-align: center;">v2.0 IndexedDB Support</div>
+<div id="sidebar-left">
+  <div style="cursor: pointer; font-size: 24px; opacity: 0.5;" onclick="toggleSidebarMenu(event)">⋮</div>
+  <div id="sidebar-context" class="context-menu" style="left: 65px; top: 20px; padding: 25px 15px; width: auto;" onclick="event.stopPropagation()">
+    <input type="range" id="hue-slider" min="0" max="360" value="0" style="appearance: none; width: 120px; height: 4px; background: #333; transform: rotate(-90deg); cursor: pointer; margin: 60px 0;">
   </div>
+  <button class="mist-btn" onclick="triggerBG()" style="width:40px; font-size:8px;">BG</button>
+</div>
 
-  <div id="main">
-    <div class="bg-wrapper">
-        <video id="bg-video-main" class="bg-video" autoplay muted loop playsinline></video>
-        <div id="bg-img-main" class="bg-img-div"></div>
-    </div>
-    <h1 style="font-size:18px; margin-bottom:40px; font-weight: 900; letter-spacing: 5px;">CL <span id="accent-title" style="color:hsla(var(--accent-hue), 100%, 50%, 0.6)">VAULT</span></h1>
-    
-    <div style="display:flex; gap:10px; margin-bottom:40px;">
-      <input type="text" id="url-input" style="flex:1;" placeholder="PASTE SOURCE LINK...">
-      <button class="mist-btn" id="addCardBtn" style="min-width:140px;">Add Card</button>
-    </div>
+<div id="main-content">
+  <div class="bg-wrapper"><video id="bg-video" class="bg-video" autoplay muted loop playsinline></video><div id="bg-img" class="bg-img-div"></div></div>
+  <div id="video-grid"></div>
+</div>
 
-    <div class="grid" id="video-grid"></div>
-
-    <div class="pagination-ctrl" id="pag-wrap">
-        <button class="mist-btn" id="prevPage" style="height:35px; width:110px;">Previous</button>
-        <div class="page-num" id="page-display">PG 1</div>
-        <button class="mist-btn" id="nextPage" style="height:35px; width:110px;">Next</button>
+<div id="sidebar-right">
+  <div class="input-section" style="display:flex; flex-direction:column; gap:10px;">
+    <h3 style="font-size: 9px; opacity: 0.3; letter-spacing: 2px;">PASTE URL</h3>
+    <input type="text" id="url-input" placeholder="PASTE LINK...">
+    <button class="mist-btn" id="addCardBtn">Add to Vault</button>
+  </div>
+  
+  <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <h3 style="font-size: 9px; opacity: 0.3;">FOLDERS</h3>
+      <button class="mist-btn" onclick="createNewFolder()" style="padding:4px 8px;">+ NEW</button>
     </div>
+    <div id="folder-tab-list"></div>
   </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const PASS = 'Prince2beast';
-    let library = JSON.parse(localStorage.getItem('cl_shortcut_lib')) || [];
-    let activeId = null;
-    let currentPage = 1;
-    const cardsPerPage = 8;
-
-    // --- INDEXED DB ---
+    let library = JSON.parse(localStorage.getItem('cl_vF_links')) || [];
+    let folders = JSON.parse(localStorage.getItem('cl_vF_folders')) || [];
+    let openFolders = JSON.parse(localStorage.getItem('cl_vF_openFolders')) || [];
     let db;
-    const dbReq = indexedDB.open("VaultMediaDB", 2);
-    dbReq.onupgradeneeded = (e) => {
-        db = e.target.result;
-        if (!db.objectStoreNames.contains("media")) db.createObjectStore("media");
-    };
-    dbReq.onsuccess = (e) => {
-        db = e.target.result;
-        loadTheme("mainBG", "bg-video-main", "bg-img-main");
-        loadTheme("lockBG", "lock-bg-video", "lock-bg-img");
-    };
 
-    function saveTheme(key, data, isVid) {
-        const tx = db.transaction("media", "readwrite");
-        tx.objectStore("media").put({ data, isVid }, key);
-    }
+    const dbReq = indexedDB.open("VaultMediaDB", 1);
+    dbReq.onupgradeneeded = (e) => e.target.result.createObjectStore("media");
+    dbReq.onsuccess = (e) => { db = e.target.result; init(); };
 
-    function loadTheme(key, vidId, imgId) {
-        const tx = db.transaction("media", "readonly");
-        const req = tx.objectStore("media").get(key);
-        req.onsuccess = () => {
-            if (req.result) applyToElements(vidId, imgId, req.result.data, req.result.isVid);
+    function init() {
+        updateHue(localStorage.getItem('vault_hue') || 0);
+        db.transaction("media", "readonly").objectStore("media").get("currentBG").onsuccess = (e) => {
+            if (e.target.result) applyBG(e.target.result.data, e.target.result.type === 'v');
         };
+        render();
     }
 
-    function applyToElements(vidId, imgId, data, isVid) {
-        const v = document.getElementById(vidId);
-        const i = document.getElementById(imgId);
-        if(isVid) {
-            i.style.display = 'none'; v.style.display = 'block'; v.src = data;
-        } else {
-            v.style.display = 'none'; i.style.display = 'block'; i.style.backgroundImage = `url(${data})`;
-        }
+    function updateHue(h) {
+        document.documentElement.style.setProperty('--accent-hue', h);
+        localStorage.setItem('vault_hue', h);
+    }
+    document.getElementById('hue-slider').oninput = (e) => updateHue(e.target.value);
+
+    function applyBG(data, isVid) {
+        const vids = [document.getElementById('bg-video'), document.getElementById('lock-bg-video')];
+        const imgs = [document.getElementById('bg-img'), document.getElementById('lock-bg-img')];
+        vids.forEach(v => { v.style.display = 'none'; v.classList.remove('bg-visible'); });
+        imgs.forEach(i => { i.style.display = 'none'; i.classList.remove('bg-visible'); });
+        if(isVid) vids.forEach(v => { v.src = data; v.style.display = 'block'; v.classList.add('bg-visible'); });
+        else imgs.forEach(i => { i.style.backgroundImage = `url(${data})`; i.style.display = 'block'; i.classList.add('bg-visible'); });
     }
 
-    // --- UI LOGIC ---
-    function setHue(val) {
-        document.documentElement.style.setProperty('--accent-hue', val);
-        localStorage.setItem('cl_hue', val);
-        document.getElementById('hue-slider').value = val;
-        renderGrid();
-    }
-    setHue(localStorage.getItem('cl_hue') || 0);
-    document.getElementById('hue-slider').oninput = (e) => setHue(e.target.value);
+    window.toggleSidebarMenu = (e) => { e.stopPropagation(); const m = document.getElementById('sidebar-context'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; };
+    window.closeAllMenus = () => { document.querySelectorAll('.context-menu').forEach(m => m.style.display = 'none'); };
+    window.toggleMenu = (e, id) => { e.stopPropagation(); const m = document.getElementById(id); const s = m.style.display === 'block'; closeAllMenus(); if(!s) m.style.display = 'block'; };
 
-    function renderGrid() {
+    window.toggleFolder = (name) => {
+        openFolders = openFolders.includes(name) ? openFolders.filter(f => f !== name) : [...openFolders, name];
+        localStorage.setItem('cl_vF_openFolders', JSON.stringify(openFolders));
+        render();
+    };
+
+    function render() {
         const grid = document.getElementById('video-grid');
         grid.innerHTML = '';
-        const filter = document.getElementById('archive-search').value.toLowerCase();
-        const filteredLib = library.filter(i => i.label.toLowerCase().includes(filter));
-        const totalPages = Math.ceil(filteredLib.length / cardsPerPage) || 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        filteredLib.slice((currentPage-1)*cardsPerPage, currentPage*cardsPerPage).forEach(item => {
+        
+        library.filter(i => !i.folder).forEach(item => {
             const card = document.createElement('div');
-            card.className = `card ${item.id === activeId ? 'active' : ''}`;
-            card.onclick = () => { activeId = item.id; renderGrid(); };
+            card.className = 'card';
+            const fSub = folders.map(f => `<div class="menu-item" onclick="moveItem(${item.id}, '${f.name}')">${f.name}</div>`).join('');
             card.innerHTML = `
-                <button class="card-open-btn" onclick="window.open('${item.url}', '_blank')">OPEN</button>
-                <div class="thumb-wrap"><img src="${item.thumb}" onerror="this.src='https://via.placeholder.com/320x180/111/fff?text=Link'"></div>
-                <div class="card-title">${item.label}</div>
+                <div class="card-dots" onclick="toggleMenu(event, 'm-${item.id}')">⋮</div>
+                <div id="m-${item.id}" class="context-menu" style="top:25px; right:5px;">
+                    <div class="menu-item" onclick="renameItem(${item.id})">Rename</div>
+                    <div class="menu-item">Move To <span>▶</span><div class="submenu-inner">${fSub || 'No Folders'}</div></div>
+                    <div class="menu-item" style="color:red;" onclick="deleteItem(${item.id})">Delete</div>
+                </div>
+                <div style="aspect-ratio:16/9; background:#111; margin-bottom:12px; overflow:hidden;"><img src="${item.thumb}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/320x180/111/fff?text=Link'"></div>
+                <div style="font-size:10px; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:10px;">${item.label}</div>
+                <button class="mist-btn" style="width:100%;" onclick="window.open('${item.url}','_blank')">LAUNCH</button>
             `;
             grid.appendChild(card);
         });
 
-        document.getElementById('page-display').innerText = `PG ${currentPage} / ${totalPages}`;
-        document.getElementById('prevPage').disabled = (currentPage === 1);
-        document.getElementById('nextPage').disabled = (currentPage === totalPages);
-        document.getElementById('side-status').innerText = activeId ? `ACTIVE: ${library.find(x=>x.id===activeId).label}` : "AWAITING INPUT";
+        const tabList = document.getElementById('folder-tab-list');
+        tabList.innerHTML = '';
+        folders.forEach(f => {
+            const isOpen = openFolders.includes(f.name);
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <div class="folder-header">
+                    <div class="folder-name-group" onclick="toggleFolder('${f.name}')">
+                        <span style="font-size:8px; opacity:0.3;">${isOpen ? '▼' : '▶'}</span>
+                        <span style="font-size:11px; font-weight:600; text-transform:uppercase;">${f.name}</span>
+                    </div>
+                    <div class="card-dots" style="position:relative; top:0; right:0;" onclick="toggleMenu(event, 'f-opt-${f.name}')">⋮</div>
+                    <div id="f-opt-${f.name}" class="context-menu" style="right:0; margin-top:25px;">
+                        <div class="menu-item" onclick="renameFolder('${f.name}')">Rename</div>
+                        <div class="menu-item" style="color:red;" onclick="deleteFolder('${f.name}')">Delete</div>
+                    </div>
+                </div>
+                <div class="folder-content ${isOpen ? 'open' : ''}">${renderFolderLinks(f.name)}</div>
+            `;
+            tabList.appendChild(container);
+        });
     }
 
-    // --- FILE HANDLERS ---
-    function handleFile(input, key, vidId, imgId) {
-        const file = input.files[0];
-        if (!file) return;
-        const r = new FileReader();
-        r.onload = (ev) => {
-            const isVid = file.type.includes('video');
-            applyToElements(vidId, imgId, ev.target.result, isVid);
-            saveTheme(key, ev.target.result, isVid);
-        };
-        r.readAsDataURL(file);
+    function renderFolderLinks(fName) {
+        const links = library.filter(i => i.folder === fName);
+        if(!links.length) return '<div style="font-size:8px; opacity:0.2; text-align:center;">Empty</div>';
+        const latestId = links.length ? links.reduce((p, c) => (p.movedAt > c.movedAt) ? p : c).id : null;
+
+        return links.map(l => {
+            const isFresh = (Date.now() - l.movedAt < 18000000) && l.id === latestId; // 5 hours
+            return `
+                <div class="folder-link-item">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:9px; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:140px;">
+                            ${l.label}${isFresh ? '<span class="new-badge">NEW</span>' : ''}
+                        </span>
+                        <div class="card-dots" style="position:relative; top:0; right:0;" onclick="toggleMenu(event, 'f-m-${l.id}')">⋮</div>
+                    </div>
+                    <div id="f-m-${l.id}" class="context-menu" style="right:10px; margin-top:5px;">
+                        <div class="menu-item" onclick="window.open('${l.url}','_blank')">Open</div>
+                        <div class="menu-item" onclick="renameItem(${l.id})">Rename</div>
+                        <div class="menu-item" onclick="moveItem(${l.id}, '')">Remove Folder</div>
+                        <div class="menu-item" style="color:red;" onclick="deleteItem(${l.id})">Delete</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
-    document.getElementById('bg-file-main').onchange = (e) => handleFile(e.target, "mainBG", "bg-video-main", "bg-img-main");
-    document.getElementById('bg-file-lock').onchange = (e) => handleFile(e.target, "lockBG", "lock-bg-video", "lock-bg-img");
-
-    // --- OTHER BUTTONS ---
-    document.getElementById('addCardBtn').onclick = () => {
-        let rawUrl = document.getElementById('url-input').value.trim();
-        if(!rawUrl) return;
-        if (!/^https?:\/\//i.test(rawUrl)) rawUrl = 'https://' + rawUrl;
-        const urlObj = new URL(rawUrl);
-        const ytMatch = rawUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-        const thumb = ytMatch ? `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg` : `https://www.google.com/s2/favicons?sz=128&domain=${urlObj.hostname}`;
-        library.unshift({ id: Date.now(), url: rawUrl, thumb: thumb, label: urlObj.hostname.split('.')[0] });
-        localStorage.setItem('cl_shortcut_lib', JSON.stringify(library));
-        document.getElementById('url-input').value = ""; renderGrid();
+    window.moveItem = (id, fName) => { 
+        const idx = library.findIndex(i => i.id === id); 
+        if(idx !== -1) { 
+            library[idx].folder = fName; 
+            library[idx].movedAt = Date.now(); 
+            sync(); 
+        } 
     };
 
-    document.getElementById('loginBtn').onclick = () => {
-        if(document.getElementById('password').value === PASS) {
-            document.getElementById('lock-screen').classList.add('hidden');
-            document.getElementById('main-site').classList.add('visible');
-            renderGrid();
-        }
+    window.renameFolder = (oldN) => { 
+        const newN = prompt("New Folder Name:", oldN); 
+        if(newN && newN !== oldN) { 
+            folders = folders.map(f => f.name === oldN ? {name: newN} : f); 
+            library.forEach(i => { if(i.folder === oldN) i.folder = newN; }); 
+            sync(); 
+        } 
     };
 
-    window.toggleGlobalMenu = (e) => { e.stopPropagation(); const m = document.getElementById('global-menu'); m.style.display = m.style.display === 'block' ? 'none' : 'block'; };
-    window.onclick = () => document.getElementById('global-menu').style.display = 'none';
-    document.getElementById('archive-search').oninput = () => { currentPage = 1; renderGrid(); };
-    document.getElementById('prevPage').onclick = () => { if(currentPage > 1) { currentPage--; renderGrid(); } };
-    document.getElementById('nextPage').onclick = () => { if(currentPage < Math.ceil(library.length/cardsPerPage)) { currentPage++; renderGrid(); } };
+    window.renameItem = (id) => { 
+        const i = library.find(item => item.id === id); 
+        const n = prompt("Rename Link:", i.label); 
+        if(n) { i.label = n; sync(); } 
+    };
+
+    window.deleteFolder = (n) => { folders = folders.filter(f => f.name !== n); library.forEach(i => {if(i.folder===n) i.folder='';}); sync(); };
+    window.createNewFolder = () => { const n = prompt("Folder Name:"); if(n) { folders.push({name:n}); sync(); } };
+    window.deleteItem = (id) => { library = library.filter(i => i.id !== id); sync(); };
+
+    document.getElementById('addCardBtn').onclick = async () => {
+        const btn = document.getElementById('addCardBtn'); const input = document.getElementById('url-input');
+        const url = input.value.trim(); if(!url) return;
+        const clean = url.startsWith('http') ? url : `https://${url}`;
+        btn.innerText = 'FETCHING...'; btn.disabled = true;
+        try {
+            const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(clean)}`);
+            const data = await res.json();
+            library.unshift({ id: Date.now(), label: data.data.title || clean, url: clean, thumb: data.data.image?.url || '', folder: "", movedAt: 0 });
+            sync();
+        } catch (e) { library.unshift({ id: Date.now(), label: clean, url: clean, thumb: '', folder: "", movedAt: 0 }); sync(); }
+        btn.innerText = 'ADD TO VAULT'; btn.disabled = false; input.value = '';
+    };
+
+    function sync() { localStorage.setItem('cl_vF_links', JSON.stringify(library)); localStorage.setItem('cl_vF_folders', JSON.stringify(folders)); render(); }
+    
+    window.triggerBG = () => { 
+        const f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*,video/*'; 
+        f.onchange = (e) => { 
+            const r = new FileReader(); 
+            r.onload = (ev) => { 
+                const isV = e.target.files[0].type.includes('video'); 
+                applyBG(ev.target.result, isV); 
+                db.transaction("media", "readwrite").objectStore("media").put({ data: ev.target.result, type: isV ? 'v' : 'i' }, "currentBG"); 
+            }; 
+            r.readAsDataURL(e.target.files[0]); 
+        }; 
+        f.click(); 
+    };
+
+    document.getElementById('loginBtn').onclick = () => { if(document.getElementById('password').value === PASS) document.getElementById('lock-screen').classList.add('hidden'); };
 });
 </script>
 </body>
