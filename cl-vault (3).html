@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CL Vault</title>
+
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFGmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI3OGI3YSwgMjAyMi8wNi8xMy0yMjowMTo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0I3RjI5Q0VBRDVCMTFFRThDODREMDkxNzZBNTcwMDkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0I3RjI5Q0RBRDVCMTFFRThDODREMDkxNzZBNTcwMDkiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI0LjAgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NkExN0IxRDZBRDVCMTFFRThDODREMDkxNzZBNTcwMDkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NkExN0IxRDdBRDVCMTFFRThDODREMDkxNzZBNTcwMDkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InciPz50S/pYAAAEZ0lEQVRYhe2XfUzUdRzHP98f98edB3ceIodHeSjHQRAnZzBeYInisGBr6GypyWpt5WptbbWttVr90Zq19UfWltZqay7NoXNoYigigq7p8YhHIApEx6HDcefhjuP3x6+fKAcHdyAd7Xf7fX6vP97v+3m+n/f7fD77A7S3X8tL3v8fAG6O7OxsUqnUMU8mk1fF4/E/XwCv8vPzSU9PJ5FInPMEAgHm5+eRZRm5+T2fT0uShKqq9Pb2MjY2dk7g9Xp/UACvFosFq9WKLMscPHiQSCRCUlIS6enpeDwenE4nkUiEUCiEKIqoqkoaY3x8nM7OTnp6euju7mZ8fPw7z3MAnidAOBwmKysLq9WKJElIkkRWVhbBYBCTyYTVaiUQCBAMBvF4PKTT6SSTSaLRKF1dXTgcDtrb2+no6GBiYuJr6/MAnicAn89HSUkJVVVVFBQUYLPZSEtLw2g0Isf/uVwupOnpaUZGRuju7sbhcNDa2srk5OR3pucBPE+AxMRE8vLyMBgMeDwevF4vJSUlFBcXk5qaSjAYRFEUFEUhlUoxNTVFW1sbbW1tdHd3Mzk5id/vfw54ngDZ2dmIokgsFmNkZIRAIIDP56Ourg6Px4PBYMCS+O/3+5mcnKSurq6qqumNjIzc8DyA5wnAn08GgwFFURgeHiYSiSAn/hcXF1NTU4Pf738OeJ4AisPhQB6P0dFReSIRCPl8PoqLi8nMzER+GZfLRWtrK62trXR2dtLT04Pf738OeJ4AarXaj6qqSJKEEI8jHA5TXFxMdXU18XgcRVEYHh6mvb2dtvZ2enp6mJycxO/3Pwc8T4BvGhoaDmVmZp5IJpPHX63VarXabDavKIqHqqq7Ghoa2v5qAnp7exkdHWVxcRFFUfB6vVRXV5OdnU0oFCISidDb20tnZye9vb1MTk7idrt3+f3+9S98v8f3uVwuOjo6mJqaYmFhgfHxccbGxhgdHWVkZIRQKMT8/DylpaXU1dWRkpJCKBQinU7T3d2N3e7A7rAzPj7OwsIC4XCYvr4+7HY7Lpfrm/HxcTo7O5menub999f+7u964uLiSElJ4dVXf+Lll/8kPj4eXdex2WxYrVba29t5+eUX+fbb7zh06DDnz/9FWdkZ9PqY77yvL/1pI6IokkjEeeONKqxWKz6fj+rqar799jsOHTrMpUtVpFIpvv/+R0SR/pAniiImkwm9Xo/JZKKiogK/309NTQ2XLlWRTqf5/fcfKS09gyRJ9/T3/X4vXq+X9vY7jIyMkEwm8Xq9HD9+gp9+uozH4+HSpX9wOp0AtLS04Xa7UauvHwNJSUnodDpKSkoYGBiguroai8XChQtXcLvdAFitp5ifXyAUCvHzz9eYmZlFkqR7+vszv8/lctFWVkZycjKqqpJKpWhra8NisTB9fIbx8TGmp6fwer10dnYCUFx8vHlqavpT+fIu+eP3+1EUBVVVUVUVURTZuHGTVqfTsWvXbpqamuju7r7mef4Z8D8+S4F80M/l+wAAAABJRU5ErkJggg==">
+
+  <style>
+    :root { --accent-hue: 0; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; color: #fff; overflow: hidden; background: #000; display: flex; }
+
+    /* --- Custom Scrollbars --- */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: hsla(var(--accent-hue), 100%, 50%, 0.5); }
+
+    /* --- Buttons & Badges --- */
+    .mist-btn {
+      background: hsla(var(--accent-hue), 100%, 50%, 0.1);
+      color: #fff; border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.3);
+      cursor: pointer; font-size: 10px; padding: 10px; text-transform: uppercase; transition: 0.2s;
+      letter-spacing: 0.5px; border-radius: 3px; white-space: nowrap;
+    }
+    .mist-btn:hover { background: hsla(var(--accent-hue), 100%, 50%, 0.2); border-color: hsla(var(--accent-hue), 100%, 50%, 1); }
+    .mist-btn:active { transform: scale(0.97); }
+    .mist-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .mist-btn.danger { border-color: rgba(255,80,80,0.3); color: #ff8080; }
+    .mist-btn.danger:hover { border-color: rgba(255,80,80,0.8); background: rgba(255,80,80,0.15); }
+    .mist-btn.ghost { background: transparent; border-color: rgba(255,255,255,0.1); font-size: 9px; padding: 8px; }
+
+    .new-badge {
+      font-size: 7px; background: hsla(var(--accent-hue), 100%, 50%, 1);
+      color: #000; padding: 1px 4px; border-radius: 2px; font-weight: 900;
+      margin-left: 8px; box-shadow: 0 0 8px hsla(var(--accent-hue), 100%, 50%, 0.5);
+      white-space: nowrap;
+    }
+
+    /* --- Tag chips --- */
+    .tag-chip {
+      display: inline-block; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #ccc;
+      padding: 3px 7px; border-radius: 10px; cursor: pointer; margin: 0 4px 4px 0; transition: 0.15s;
+    }
+    .tag-chip:hover { border-color: hsla(var(--accent-hue), 100%, 50%, 0.6); color: #fff; }
+    .tag-chip.active { background: hsla(var(--accent-hue), 100%, 50%, 0.25); border-color: hsla(var(--accent-hue), 100%, 50%, 1); color: #fff; }
+    .tag-chip.small { cursor: default; font-size: 7px; padding: 2px 6px; }
+    .card-tags { margin-bottom: 8px; }
+
+    /* --- Toast --- */
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: #111; border: 1px solid hsla(var(--accent-hue), 100%, 50%, 0.5); color: #fff; padding: 12px 20px; font-size: 11px; border-radius: 4px; z-index: 10000; opacity: 0; transition: 0.3s; pointer-events: none; max-width: 60vw; text-align: center; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* --- Sidebars --- */
+    #sidebar-left { width: 60px; background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 20px; z-index: 500; }
+    #sidebar-right { width: 260px; background: rgba(0,0,0,0.85); backdrop-filter: blur(30px); border-left: 1px solid rgba(255,255,255,0.1); padding: 20px 15px; display: flex; flex-direction: column; gap: 25px; overflow-y: auto; z-index: 400; }
+
+    #url-input, #search-input, #sort-select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; font-size: 11px; outline: none; width: 100%; transition: 0.3s; border-radius: 3px; }
+    #url-input:focus, #search-input:focus, #sort-select:focus { border-color: hsla(var(--accent-hue), 100%, 50%, 0.8); }
+    #url-input.input-error { border-color: rgba(255,80,80,0.8); }
+    #sort-select { width: auto; cursor: pointer; }
+    #sort-select option { background: #111; }
+
+    /* --- Toolbar --- */
+    #toolbar { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; position: relative; z-index: 20; }
+    #search-input { flex: 1; min-width: 0; }
+    #tag-filter-row { margin-bottom: 18px; position: relative; z-index: 20; }
+
+    /* --- Grid & Cards --- */
+    #main-content { flex: 1; padding: 40px; overflow-y: auto; position: relative; z-index: 10; }
+    #video-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:20px; position: relative; z-index: 20; min-height: 100px; }
+    .card { background: rgba(255,255,255,0.03); padding: 15px; border: 1px solid rgba(255,255,255,0.08); position: relative; border-radius: 4px; transition: border-color 0.2s, opacity 0.2s; cursor: grab; }
+    .card:hover { border-color: rgba(255,255,255,0.2); }
+    .card.dragging { opacity: 0.35; }
+    .card-dots { cursor: pointer; opacity: 0.6; font-size: 14px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 3px; }
+    .card-dots:hover { opacity: 1; background: rgba(255,255,255,0.08); }
+    .visit-count { font-size: 8px; opacity: 0.35; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .favicon-badge { position: absolute; bottom: 4px; left: 4px; width: 18px; height: 18px; border-radius: 3px; background: #000; padding: 2px; box-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+
+    #empty-state { text-align: center; padding: 80px 20px; opacity: 0.35; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; grid-column: 1/-1; }
+
+    /* --- Context Menus --- */
+    .context-menu { position: absolute; background: #111; border: 1px solid #333; z-index: 3000; display: none; width: 160px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: visible; }
+    .menu-item { position: relative; padding: 10px; font-size: 9px; text-transform: uppercase; cursor: pointer; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; color: #ccc; }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:hover { background: hsla(var(--accent-hue), 100%, 50%, 0.2); color: #fff; }
+    .submenu-inner { position: absolute; right: 100%; top: 0; background: #111; border: 1px solid #333; width: 150px; display: none; z-index: 3100; max-height: 200px; overflow-y: auto; border-radius: 4px; }
+    .menu-item:hover > .submenu-inner { display: block; }
+
+    /* --- Folders --- */
+    .folder-header { padding: 12px 4px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 3px; transition: background 0.15s; }
+    .folder-header.drop-hover { background: hsla(var(--accent-hue), 100%, 50%, 0.15); }
+    .folder-name-group { cursor: pointer; display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; }
+    .folder-content { display: none; padding: 10px 0; border-left: 1px solid rgba(255,255,255,0.05); margin-left: 4px; }
+    .folder-content.open { display: block; }
+    .folder-link-item { display: flex; flex-direction: column; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); position: relative; cursor: grab; }
+
+    /* --- Lock Screen --- */
+    #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #050505; transition: 0.8s; }
+    #lock-screen.hidden { opacity: 0; pointer-events: none; }
+    #password { background:#000; border:1px solid rgba(255,255,255,0.1); color:#fff; padding: 12px; text-align:center; outline:none; margin-bottom:10px; width:220px; z-index: 10001; border-radius: 3px; letter-spacing: 2px; }
+    #lock-hint { font-size: 9px; opacity: 0.25; margin-top: 14px; letter-spacing: 1px; text-transform: uppercase; }
+
+    .bg-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+    video.bg-video, .bg-img-div { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; display: none; opacity: 0; transition: opacity 1s; background-position: center; background-size: cover; }
+    .bg-visible { opacity: 1 !important; display: block !important; }
+
+    #file-import { display: none; }
+
+    /* --- Device transfer --- */
+    #transfer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 9000; align-items: center; justify-content: center; }
+    #transfer-overlay.show { display: flex; }
+    #transfer-panel { background: #0a0a0a; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 30px; width: 320px; max-width: 85vw; text-align: center; }
+    #transfer-panel .t-label { font-size: 9px; opacity: 0.4; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+    #transfer-panel .t-code { font-size: 20px; font-weight: 700; letter-spacing: 2px; font-family: monospace; margin-bottom: 14px; word-break: break-all; }
+    #transfer-panel .t-msg { font-size: 11px; opacity: 0.7; margin-bottom: 18px; line-height: 1.6; }
+    #transfer-panel .t-msg.err { color: #ff8080; opacity: 1; }
+    #transfer-panel input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; font-size: 12px; border-radius: 3px; text-align: center; letter-spacing: 1px; margin-bottom: 14px; font-family: monospace; outline: none; }
+    #transfer-panel input:focus { border-color: hsla(var(--accent-hue), 100%, 50%, 0.8); }
+    #transfer-panel .mist-btn { width: 100%; margin-bottom: 10px; }
+    #transfer-panel .mist-btn:last-child { margin-bottom: 0; }
+    .t-spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.15); border-top-color: hsla(var(--accent-hue), 100%, 50%, 1); border-radius: 50%; margin: 0 auto 16px; animation: t-spin 0.8s linear infinite; }
+    @keyframes t-spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body onclick="closeAllMenus()">
+
+<div id="lock-screen">
+  <div class="bg-wrapper">
+    <video id="lock-bg-video" class="bg-video" autoplay muted loop playsinline></video>
+    <div id="lock-bg-img" class="bg-img-div"></div>
+  </div>
+  <input type="password" id="password" placeholder="ACCESS KEY" autocomplete="off">
+  <button class="mist-btn" id="loginBtn" style="width:220px;">Unlock</button>
+  <div id="lock-hint">CL Vault</div>
+</div>
+
+<div id="sidebar-left">
+  <div style="cursor: pointer; font-size: 24px; opacity: 0.5;" onclick="toggleSidebarMenu(event)">⋮</div>
+  <div id="sidebar-context" class="context-menu" style="left: 65px; top: 20px; padding: 25px 15px; width: auto;" onclick="event.stopPropagation()">
+    <input type="range" id="hue-slider" min="0" max="360" value="0" style="appearance: none; width: 120px; height: 4px; background: #333; transform: rotate(-90deg); cursor: pointer; margin: 60px 0;">
+  </div>
+  <button class="mist-btn" onclick="triggerBG()" title="Set background image or video" style="width:40px; font-size:8px;">BG</button>
+  <button class="mist-btn" onclick="shuffleOpen()" title="Open a random saved link (Shift+?)" style="width:40px; font-size:14px; padding: 8px;">🎲</button>
+</div>
+
+<div id="main-content">
+  <div class="bg-wrapper">
+    <video id="bg-video" class="bg-video" autoplay muted loop playsinline></video>
+    <div id="bg-img" class="bg-img-div"></div>
+  </div>
+
+  <div id="toolbar">
+    <input type="text" id="search-input" placeholder="Search your vault... ( / )">
+    <select id="sort-select" title="Sort order">
+      <option value="added">Recently Added</option>
+      <option value="az">A – Z</option>
+      <option value="most">Most Opened</option>
+    </select>
+  </div>
+  <div id="tag-filter-row"></div>
+
+  <div id="video-grid"></div>
+</div>
+
+<div id="sidebar-right">
+  <div class="input-section" style="display:flex; flex-direction:column; gap:8px;">
+    <h3 style="font-size: 8px; opacity: 0.3; letter-spacing: 2px; margin: 0;">PASTE URL</h3>
+    <input type="text" id="url-input" placeholder="URL... ( Ctrl/Cmd+K )">
+    <button class="mist-btn" id="addCardBtn">Add to Vault</button>
+  </div>
+
+  <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <h3 style="font-size: 8px; opacity: 0.3; margin: 0;">FOLDERS</h3>
+      <button class="mist-btn" onclick="createNewFolder()" style="padding:4px 6px; font-size: 8px;">+ NEW</button>
+    </div>
+    <div id="folder-tab-list"></div>
+  </div>
+
+  <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; display:flex; flex-direction:column; gap:8px;">
+    <h3 style="font-size: 8px; opacity: 0.3; letter-spacing: 2px; margin: 0 0 4px 0;">DEVICES</h3>
+    <button class="mist-btn ghost" onclick="startSendTransfer()">Send To Device</button>
+    <button class="mist-btn ghost" onclick="startReceiveTransfer()">Receive Code</button>
+  </div>
+
+  <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; margin-top:auto; display:flex; flex-direction:column; gap:8px;">
+    <h3 style="font-size: 8px; opacity: 0.3; letter-spacing: 2px; margin: 0 0 4px 0;">DATA</h3>
+    <button class="mist-btn ghost" onclick="exportData()">Export Backup</button>
+    <button class="mist-btn ghost" onclick="document.getElementById('file-import').click()">Import Backup</button>
+    <input type="file" id="file-import" accept="application/json">
+    <button class="mist-btn danger" onclick="clearAllData()">Clear All Data</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="transfer-overlay">
+  <div id="transfer-panel"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const PASS = 'Prince2beast';
+    let library = JSON.parse(localStorage.getItem('cl_vF_links')) || [];
+    let folders = JSON.parse(localStorage.getItem('cl_vF_folders')) || [];
+    let openFolders = JSON.parse(localStorage.getItem('cl_vF_openFolders')) || [];
+    let searchQuery = '';
+    let activeTag = null;
+    let sortMode = localStorage.getItem('cl_vault_sort') || 'added';
+    let db;
+    let currentURL = null;
+
+    // ---- One-time migration: folders used to be identified by name only.
+    // Give every folder a stable id, and re-point library.folder references at ids.
+    (function migrateFolderIds() {
+        let changed = false;
+        folders = folders.map(f => {
+            if (!f.id) { changed = true; return { id: 'f_' + Math.random().toString(36).slice(2, 10), name: f.name }; }
+            return f;
+        });
+        if (changed) {
+            const byName = {};
+            folders.forEach(f => { byName[f.name] = f.id; });
+            library.forEach(item => {
+                if (item.folder && byName[item.folder] && item.folder !== byName[item.folder]) {
+                    item.folder = byName[item.folder];
+                }
+            });
+            openFolders = openFolders.map(n => byName[n] || n);
+        }
+        // Backfill new fields on older items
+        library.forEach(item => {
+            if (!Array.isArray(item.tags)) item.tags = [];
+            if (typeof item.visits !== 'number') item.visits = 0;
+            if (typeof item.lastOpened !== 'number') item.lastOpened = 0;
+        });
+    })();
+
+    // Escapes text for safe insertion into innerHTML (element content or attribute)
+    const escapeHTML = (str) => {
+        if (str === undefined || str === null) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    };
+
+    // Escapes text for safe insertion inside a single-quoted JS string in an inline handler
+    const escapeJS = (str) => {
+        if (str === undefined || str === null) return '';
+        return String(str)
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, "\\'")
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\n/g, ' ');
+    };
+
+    const faviconUrl = (url) => {
+        try { return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(new URL(url).hostname)}&sz=64`; }
+        catch (e) { return ''; }
+    };
+
+    let toastTimer;
+    window.showToast = (msg) => {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+    };
+
+    const dbReq = indexedDB.open("VaultMediaDB", 4);
+    dbReq.onupgradeneeded = (e) => {
+        let database = e.target.result;
+        if (!database.objectStoreNames.contains("media")) database.createObjectStore("media");
+    };
+    dbReq.onsuccess = (e) => { db = e.target.result; init(); };
+    dbReq.onerror = () => { init(); };
+
+    function init() {
+        updateHue(localStorage.getItem('vault_hue') || 0);
+        document.getElementById('sort-select').value = sortMode;
+        if (db) {
+            const tx = db.transaction("media", "readonly");
+            tx.objectStore("media").get("currentBG").onsuccess = (e) => {
+                if (e.target.result) applyBG(e.target.result.data, e.target.result.type === 'v');
+            };
+        }
+
+        // Grid-level drag targets (attached once; grid element itself persists across renders)
+        const grid = document.getElementById('video-grid');
+        grid.addEventListener('dragover', allowDrop);
+        grid.addEventListener('drop', handleGridDrop);
+
+        document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; render(); });
+        document.getElementById('sort-select').addEventListener('change', (e) => {
+            sortMode = e.target.value;
+            localStorage.setItem('cl_vault_sort', sortMode);
+            render();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            const el = document.activeElement;
+            const typing = el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA');
+            if (e.key === 'Escape') {
+                if (document.getElementById('transfer-overlay').classList.contains('show')) { closeTransferOverlay(); return; }
+                closeAllMenus(); if (el && typing) el.blur(); return;
+            }
+            if (!typing && e.key === '/') { e.preventDefault(); document.getElementById('search-input').focus(); return; }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); document.getElementById('url-input').focus(); return; }
+        });
+
+        render();
+        setTimeout(() => document.getElementById('password').focus(), 500);
+    }
+
+    function applyBG(data, isVid) {
+        const vids = [document.getElementById('bg-video'), document.getElementById('lock-bg-video')];
+        const imgs = [document.getElementById('bg-img'), document.getElementById('lock-bg-img')];
+        if (currentURL) URL.revokeObjectURL(currentURL);
+        vids.forEach(v => { v.style.display='none'; v.classList.remove('bg-visible'); v.src=""; });
+        imgs.forEach(i => { i.style.display='none'; i.classList.remove('bg-visible'); i.style.backgroundImage=""; });
+        const src = (data instanceof Blob) ? (currentURL = URL.createObjectURL(data)) : data;
+        if (isVid) {
+            vids.forEach(v => { v.src=src; v.style.display='block'; v.classList.add('bg-visible'); v.load(); v.play().catch(()=>{}); });
+        } else {
+            imgs.forEach(i => { i.style.backgroundImage=`url(${src})`; i.style.display='block'; i.classList.add('bg-visible'); });
+        }
+    }
+
+    window.triggerBG = () => {
+        const f = document.createElement('input'); f.type='file'; f.accept='image/*,video/*';
+        f.onchange = (e) => {
+            const file = e.target.files[0]; if(!file) return;
+            const isV = file.type.includes('video');
+            if (!db) { showToast('Media storage unavailable in this browser'); return; }
+            const tx = db.transaction("media", "readwrite");
+            tx.objectStore("media").put({ data: file, type: isV ? 'v' : 'i' }, "currentBG");
+            tx.oncomplete = () => { applyBG(file, isV); showToast('Background updated'); };
+            tx.onerror = () => showToast('Could not save background');
+        };
+        f.click();
+    };
+
+    const passIn = document.getElementById('password');
+    passIn.addEventListener('keypress', (e) => { if(e.key==='Enter') login(); });
+    document.getElementById('loginBtn').onclick = login;
+
+    function login() {
+        if(passIn.value === PASS) {
+            document.getElementById('lock-screen').classList.add('hidden');
+            const mainVid = document.getElementById('bg-video');
+            if(mainVid) mainVid.play().catch(()=>{});
+        } else {
+            passIn.style.borderColor = "red"; passIn.value = "";
+            setTimeout(() => passIn.style.borderColor = "rgba(255,255,255,0.1)", 1000);
+        }
+    }
+
+    function updateHue(h) {
+        document.documentElement.style.setProperty('--accent-hue', h);
+        localStorage.setItem('vault_hue', h);
+        document.getElementById('hue-slider').value = h;
+    }
+    document.getElementById('hue-slider').oninput = (e) => updateHue(e.target.value);
+
+    window.toggleSidebarMenu = (e) => {
+        e.stopPropagation();
+        const m = document.getElementById('sidebar-context');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+    };
+
+    window.closeAllMenus = () => document.querySelectorAll('.context-menu').forEach(m => m.style.display = 'none');
+
+    window.toggleMenu = (e, id) => {
+        e.stopPropagation();
+        const m = document.getElementById(id);
+        const isVisible = m.style.display === 'block';
+        closeAllMenus();
+        if(!isVisible) m.style.display = 'block';
+    };
+
+    window.toggleFolder = (id) => {
+        openFolders = openFolders.includes(id) ? openFolders.filter(f => f !== id) : [...openFolders, id];
+        localStorage.setItem('cl_vF_openFolders', JSON.stringify(openFolders));
+        render();
+    };
+
+    // ---- Search / tag filter / sort ----
+    function matchesFilter(item) {
+        const q = searchQuery.trim().toLowerCase();
+        const matchesSearch = !q || item.label.toLowerCase().includes(q) || (item.tags || []).some(t => t.toLowerCase().includes(q));
+        const matchesTag = !activeTag || (item.tags || []).includes(activeTag);
+        return matchesSearch && matchesTag;
+    }
+
+    function sortItems(arr) {
+        const copy = [...arr];
+        if (sortMode === 'az') copy.sort((a, b) => a.label.localeCompare(b.label));
+        else if (sortMode === 'most') copy.sort((a, b) => (b.visits || 0) - (a.visits || 0));
+        return copy; // 'added' keeps underlying array order (newest-first + manual drag order)
+    }
+
+    window.toggleTagFilter = (t) => { activeTag = (activeTag === t) ? null : t; render(); };
+
+    function renderTagFilterRow() {
+        const allTags = new Set();
+        library.forEach(i => (i.tags || []).forEach(t => allTags.add(t)));
+        const row = document.getElementById('tag-filter-row');
+        if (!allTags.size) { row.innerHTML = ''; return; }
+        row.innerHTML = [...allTags].sort().map(t =>
+            `<span class="tag-chip ${t === activeTag ? 'active' : ''}" onclick="toggleTagFilter('${escapeJS(t)}')">${escapeHTML(t)}</span>`
+        ).join('');
+    }
+
+    function render() {
+        renderTagFilterRow();
+
+        const grid = document.getElementById('video-grid');
+        grid.innerHTML = '';
+        const totalRoot = library.filter(i => !i.folder).length;
+        const rootItems = sortItems(library.filter(i => !i.folder && matchesFilter(i)));
+
+        if (!totalRoot && !library.length) {
+            grid.innerHTML = `<div id="empty-state">Nothing saved yet — paste a URL on the right to get started</div>`;
+        } else if (!rootItems.length) {
+            grid.innerHTML = `<div id="empty-state">${totalRoot ? 'No matches' : "No unsorted links — everything's filed into folders"}</div>`;
+        }
+
+        rootItems.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.draggable = true;
+            card.dataset.id = item.id;
+            card.addEventListener('dragstart', (e) => { handleDragStart(e, item.id); card.classList.add('dragging'); });
+            card.addEventListener('dragend', () => card.classList.remove('dragging'));
+            card.addEventListener('dragover', allowDrop);
+            card.addEventListener('drop', (e) => handleCardDrop(e, item.id));
+
+            const fSub = folders.map(f =>
+                `<div class="menu-item" onclick="moveItem(${item.id}, '${f.id}')">${escapeHTML(f.name)}</div>`
+            ).join('');
+            const tagsHTML = (item.tags && item.tags.length)
+                ? `<div class="card-tags">${item.tags.map(t => `<span class="tag-chip small">${escapeHTML(t)}</span>`).join('')}</div>` : '';
+            const visitsHTML = item.visits ? `<div class="visit-count">${item.visits} open${item.visits > 1 ? 's' : ''}</div>` : '';
+            const favicon = faviconUrl(item.url);
+
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <div style="font-size:10px; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:10px; flex:1;" title="${escapeHTML(item.label)}">${escapeHTML(item.label)}</div>
+                    <div class="card-dots" onclick="toggleMenu(event, 'm-${item.id}')">⋮</div>
+                </div>
+                <div id="m-${item.id}" class="context-menu" style="top:25px; right:5px;">
+                    <div class="menu-item" onclick="renameItem(${item.id})">Rename</div>
+                    <div class="menu-item" onclick="editTags(${item.id})">Edit Tags</div>
+                    <div class="menu-item" onclick="copyLink('${escapeJS(item.url)}')">Copy Link</div>
+                    <div class="menu-item">Move To <span>▶</span><div class="submenu-inner">${fSub || '<div class="menu-item">No Folders</div>'}</div></div>
+                    <div class="menu-item" style="color:red;" onclick="deleteItem(${item.id})">Delete</div>
+                </div>
+                ${tagsHTML}
+                <div style="aspect-ratio:16/9; background:#111; margin-bottom:12px; overflow:hidden; border-radius:2px; position:relative;">
+                    <img src="${escapeHTML(item.thumb)}" alt="" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null;this.src='https://via.placeholder.com/320x180/111/fff?text=Link'">
+                    ${favicon ? `<img class="favicon-badge" src="${escapeHTML(favicon)}" alt="" onerror="this.style.display='none'">` : ''}
+                </div>
+                ${visitsHTML}
+                <button class="mist-btn" style="width:100%;" onclick="launchLink(${item.id}, '${escapeJS(item.url)}')">LAUNCH</button>
+            `;
+            grid.appendChild(card);
+        });
+
+        const tabList = document.getElementById('folder-tab-list');
+        tabList.innerHTML = '';
+        if (!folders.length) {
+            tabList.innerHTML = `<div style="font-size:8px; opacity:0.25; text-align:center; padding:10px 0;">No folders yet</div>`;
+        }
+        folders.forEach(f => {
+            const isOpen = openFolders.includes(f.id);
+            const container = document.createElement('div');
+
+            container.innerHTML = `
+                <div class="folder-header" ondragover="allowDrop(event); this.classList.add('drop-hover')" ondragleave="this.classList.remove('drop-hover')" ondrop="handleFolderDrop(event,'${f.id}'); this.classList.remove('drop-hover')">
+                    <div class="folder-name-group" onclick="toggleFolder('${f.id}')">
+                        <span style="font-size:8px; opacity:0.3;">${isOpen ? '▼' : '▶'}</span>
+                        <span style="font-size:11px; font-weight:600; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHTML(f.name)}">${escapeHTML(f.name)}</span>
+                    </div>
+                    <div class="card-dots" style="position:relative;" onclick="toggleMenu(event, 'f-opt-${f.id}')">⋮</div>
+                    <div id="f-opt-${f.id}" class="context-menu" style="right:0; margin-top:25px;">
+                        <div class="menu-item" onclick="openAllInFolder('${f.id}')">Open All</div>
+                        <div class="menu-item" onclick="renameFolder('${f.id}')">Rename</div>
+                        <div class="menu-item" style="color:red;" onclick="deleteFolder('${f.id}')">Delete</div>
+                    </div>
+                </div>
+                <div class="folder-content ${isOpen ? 'open' : ''}">${renderFolderLinks(f.id)}</div>
+            `;
+            tabList.appendChild(container);
+        });
+    }
+
+    function renderFolderLinks(fId) {
+        const total = library.filter(i => i.folder === fId).length;
+        const links = sortItems(library.filter(i => i.folder === fId && matchesFilter(i)));
+        if (!links.length) return `<div style="font-size:8px; opacity:0.2; text-align:center; padding:6px 0;">${total ? 'No matches' : 'Empty'}</div>`;
+
+        const latestItem = links.reduce((prev, current) => {
+            return ((prev.movedAt || 0) > (current.movedAt || 0)) ? prev : current;
+        }, links[0]);
+
+        return links.map(l => {
+            const isFresh = (l.movedAt && (Date.now() - l.movedAt < 18000000)) && l.id === latestItem.id;
+            const favicon = faviconUrl(l.url);
+            return `
+                <div class="folder-link-item" draggable="true" ondragstart="handleDragStart(event, ${l.id})">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:9px; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:140px; cursor:pointer; display:flex; align-items:center;" title="${escapeHTML(l.label)}" onclick="launchLink(${l.id}, '${escapeJS(l.url)}')">
+                            ${favicon ? `<img src="${escapeHTML(favicon)}" alt="" style="width:12px;height:12px;border-radius:2px;margin-right:5px;flex-shrink:0;" onerror="this.style.display='none'">` : ''}
+                            <span style="overflow:hidden; text-overflow:ellipsis;">${escapeHTML(l.label)}</span>${isFresh ? '<span class="new-badge">NEW</span>' : ''}
+                        </span>
+                        <div class="card-dots" style="position:relative;" onclick="toggleMenu(event, 'f-m-${l.id}')">⋮</div>
+                    </div>
+                    <div id="f-m-${l.id}" class="context-menu" style="right:10px; margin-top:5px; z-index:4000;">
+                        <div class="menu-item" onclick="launchLink(${l.id}, '${escapeJS(l.url)}')">Open</div>
+                        <div class="menu-item" onclick="renameItem(${l.id})">Rename</div>
+                        <div class="menu-item" onclick="editTags(${l.id})">Edit Tags</div>
+                        <div class="menu-item" onclick="copyLink('${escapeJS(l.url)}')">Copy Link</div>
+                        <div class="menu-item" onclick="moveItem(${l.id}, '')">Remove Folder</div>
+                        <div class="menu-item" style="color:red;" onclick="deleteItem(${l.id})">Delete</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ---- Drag & drop ----
+    window.allowDrop = (e) => { e.preventDefault(); };
+
+    window.handleDragStart = (e, id) => {
+        e.dataTransfer.setData('text/plain', String(id));
+        e.dataTransfer.effectAllowed = 'move';
+    };
+
+    window.handleFolderDrop = (e, folderId) => {
+        e.preventDefault(); e.stopPropagation();
+        const id = Number(e.dataTransfer.getData('text/plain'));
+        if (!id) return;
+        moveItem(id, folderId);
+        showToast('Moved to folder');
+    };
+
+    window.handleCardDrop = (e, targetId) => {
+        e.preventDefault(); e.stopPropagation();
+        const id = Number(e.dataTransfer.getData('text/plain'));
+        if (!id || id === targetId) return;
+        reorderItems(id, targetId);
+    };
+
+    window.handleGridDrop = (e) => {
+        e.preventDefault();
+        const id = Number(e.dataTransfer.getData('text/plain'));
+        if (!id) return;
+        const targetCard = e.target.closest('.card');
+        if (targetCard) {
+            const targetId = Number(targetCard.dataset.id);
+            if (targetId && targetId !== id) { reorderItems(id, targetId); return; }
+        }
+        const item = library.find(i => i.id === id);
+        if (item && item.folder) { moveItem(id, ''); showToast('Moved to unsorted'); }
+    };
+
+    function reorderItems(draggedId, targetId) {
+        const from = library.findIndex(i => i.id === draggedId);
+        if (from === -1) return;
+        const [moved] = library.splice(from, 1);
+        const to = library.findIndex(i => i.id === targetId);
+        library.splice(to === -1 ? library.length : to, 0, moved);
+        if (sortMode !== 'added') { sortMode = 'added'; document.getElementById('sort-select').value = 'added'; localStorage.setItem('cl_vault_sort', 'added'); }
+        sync();
+    }
+
+    window.moveItem = (id, fId) => {
+        const idx = library.findIndex(i => i.id === id);
+        if(idx !== -1) {
+            library[idx].folder = fId;
+            library[idx].movedAt = Date.now();
+            sync();
+        }
+    };
+
+    window.renameFolder = (id) => {
+        const f = folders.find(x => x.id === id);
+        if (!f) return;
+        const newN = prompt("New Name:", f.name);
+        if(newN && newN.trim() && newN !== f.name) {
+            f.name = newN.trim();
+            sync();
+        }
+    };
+
+    window.renameItem = (id) => {
+        const i = library.find(item => item.id === id);
+        if(!i) return;
+        const n = prompt("Rename Link:", i.label);
+        if(n && n.trim()) { i.label = n.trim(); sync(); }
+    };
+
+    window.editTags = (id) => {
+        const item = library.find(i => i.id === id);
+        if (!item) return;
+        const input = prompt('Tags (comma separated):', (item.tags || []).join(', '));
+        if (input === null) return;
+        item.tags = input.split(',').map(s => s.trim()).filter(Boolean);
+        sync();
+    };
+
+    window.copyLink = (url) => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(() => showToast('Link copied')).catch(() => prompt('Copy this link:', url));
+        } else {
+            prompt('Copy this link:', url);
+        }
+    };
+
+    window.launchLink = (id, url) => {
+        const item = library.find(i => i.id === id);
+        if (item) {
+            item.visits = (item.visits || 0) + 1;
+            item.lastOpened = Date.now();
+            localStorage.setItem('cl_vF_links', JSON.stringify(library));
+        }
+        window.open(url, '_blank', 'noopener,noreferrer');
+        if (item) render();
+    };
+
+    window.shuffleOpen = () => {
+        if (!library.length) { showToast('Your vault is empty'); return; }
+        const item = library[Math.floor(Math.random() * library.length)];
+        showToast(`Opening "${item.label}"`);
+        window.launchLink(item.id, item.url);
+    };
+
+    window.openAllInFolder = (fId) => {
+        const links = library.filter(i => i.folder === fId);
+        if (!links.length) { showToast('Folder is empty'); return; }
+        links.forEach(l => {
+            l.visits = (l.visits || 0) + 1;
+            l.lastOpened = Date.now();
+            window.open(l.url, '_blank', 'noopener,noreferrer');
+        });
+        localStorage.setItem('cl_vF_links', JSON.stringify(library));
+        render();
+        showToast(`Opened ${links.length} link${links.length > 1 ? 's' : ''}`);
+    };
+
+    window.deleteFolder = (id) => {
+        const f = folders.find(x => x.id === id);
+        if (!f) return;
+        if(!confirm(`Delete folder "${f.name}"? Links will be moved to main.`)) return;
+        folders = folders.filter(x => x.id !== id);
+        library.forEach(i => { if(i.folder === id) i.folder = ''; });
+        openFolders = openFolders.filter(x => x !== id);
+        localStorage.setItem('cl_vF_openFolders', JSON.stringify(openFolders));
+        sync();
+        showToast('Folder deleted');
+    };
+
+    window.createNewFolder = () => {
+        const n = prompt("Folder Name:");
+        if(n && n.trim()) {
+            folders.push({ id: 'f_' + Math.random().toString(36).slice(2, 10), name: n.trim() });
+            sync();
+        }
+    };
+
+    window.deleteItem = (id) => {
+        library = library.filter(i => i.id !== id);
+        sync();
+        showToast('Link deleted');
+    };
+
+    function sync() {
+        localStorage.setItem('cl_vF_links', JSON.stringify(library));
+        localStorage.setItem('cl_vF_folders', JSON.stringify(folders));
+        render();
+    }
+
+    // ---- Backup / restore / reset ----
+    window.exportData = () => {
+        const payload = { version: 1, exportedAt: new Date().toISOString(), library, folders, openFolders };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `cl-vault-backup-${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('Backup downloaded');
+    };
+
+    document.getElementById('file-import').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const data = JSON.parse(reader.result);
+                if (!Array.isArray(data.library) || !Array.isArray(data.folders)) throw new Error('bad shape');
+                if (!confirm('Import this backup? It will replace your current links and folders.')) return;
+                library = data.library.map(i => ({ tags: [], visits: 0, lastOpened: 0, ...i }));
+                folders = data.folders.map(f => f.id ? f : { id: 'f_' + Math.random().toString(36).slice(2, 10), name: f.name });
+                openFolders = Array.isArray(data.openFolders) ? data.openFolders : [];
+                localStorage.setItem('cl_vF_openFolders', JSON.stringify(openFolders));
+                sync();
+                showToast('Backup imported');
+            } catch (err) {
+                showToast("That file doesn't look like a valid backup");
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    });
+
+    window.clearAllData = () => {
+        if (!confirm('Clear ALL links and folders? This cannot be undone. Export a backup first if you want to keep them.')) return;
+        library = [];
+        folders = [];
+        openFolders = [];
+        localStorage.setItem('cl_vF_openFolders', JSON.stringify(openFolders));
+        sync();
+        showToast('All data cleared');
+    };
+
+    // ---- Add link ----
+    const addBtn = document.getElementById('addCardBtn');
+    const urlIn = document.getElementById('url-input');
+    urlIn.addEventListener('keypress', (e) => { if(e.key === 'Enter') addBtn.click(); });
+    urlIn.addEventListener('input', () => urlIn.classList.remove('input-error'));
+
+    addBtn.onclick = async () => {
+        const val = urlIn.value.trim();
+        if(!val) return;
+        const url = /^https?:\/\//i.test(val) ? val : `https://${val}`;
+        try { new URL(url); } catch (e) {
+            urlIn.classList.add('input-error');
+            showToast("That doesn't look like a valid URL");
+            return;
+        }
+        addBtn.innerText = 'FETCHING...'; addBtn.disabled = true;
+        try {
+            const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
+            const data = await res.json();
+            library.unshift({ id: Date.now(), label: data.data?.title || url, url: url, thumb: data.data?.image?.url || '', folder: "", movedAt: 0, tags: [], visits: 0, lastOpened: 0 });
+            sync();
+            showToast('Added to vault');
+        } catch (e) {
+            library.unshift({ id: Date.now(), label: url, url: url, thumb: '', folder: "", movedAt: 0, tags: [], visits: 0, lastOpened: 0 });
+            sync();
+            showToast('Added (preview unavailable)');
+        }
+        addBtn.innerText = 'ADD TO VAULT'; addBtn.disabled = false; urlIn.value = '';
+    };
+
+    // ---- Send / receive between devices ----
+    // Uses kvdb.io, a free anonymous key-value relay, purely as a short-lived
+    // pass-through: the vault's data is written under a random one-time code,
+    // read once by the other device, then deleted. There's no login and no
+    // permanent storage on the relay, but the data does briefly transit a
+    // third-party service, so treat the code like a one-time-use secret.
+    const KVDB_BASE = 'https://kvdb.io';
+    let transferPollTimer = null;
+    let transferDeadline = 0;
+    let activeSendCode = null;
+    let pendingTransferData = null;
+    let pendingTransferCode = null;
+
+    const formatCode = (raw) => (raw.match(/.{1,4}/g) || [raw]).join('-');
+    const cleanCode = (raw) => raw.replace(/[^a-zA-Z0-9]/g, '');
+
+    function openTransferOverlay(html) {
+        document.getElementById('transfer-panel').innerHTML = html;
+        document.getElementById('transfer-overlay').classList.add('show');
+    }
+
+    window.closeTransferOverlay = () => {
+        document.getElementById('transfer-overlay').classList.remove('show');
+        if (transferPollTimer) { clearInterval(transferPollTimer); transferPollTimer = null; }
+        if (activeSendCode) {
+            const c = encodeURIComponent(activeSendCode);
+            fetch(`${KVDB_BASE}/${c}/payload`, { method: 'DELETE' }).catch(() => {});
+            fetch(`${KVDB_BASE}/${c}/ack`, { method: 'DELETE' }).catch(() => {});
+            activeSendCode = null;
+        }
+        pendingTransferData = null;
+        pendingTransferCode = null;
+    };
+
+    window.startSendTransfer = async () => {
+        openTransferOverlay(`
+            <div class="t-label">Send To Device</div>
+            <div class="t-spinner"></div>
+            <div class="t-msg">Generating code…</div>
+        `);
+        try {
+            const bucketRes = await fetch(`${KVDB_BASE}/`, { method: 'POST' });
+            if (!bucketRes.ok) throw new Error('bucket create failed');
+            const code = (await bucketRes.text()).trim();
+            if (!code) throw new Error('empty bucket id');
+            const payload = JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), library, folders, openFolders });
+            const writeRes = await fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/payload`, { method: 'POST', body: payload });
+            if (!writeRes.ok) throw new Error('write failed');
+            activeSendCode = code;
+            renderSendWaiting(code);
+            pollForAck(code);
+        } catch (e) {
+            openTransferOverlay(`
+                <div class="t-label">Send To Device</div>
+                <div class="t-msg err">Couldn't reach the transfer service. Check your connection and try again, or use Export Backup instead.</div>
+                <button class="mist-btn" onclick="closeTransferOverlay()">Close</button>
+            `);
+        }
+    };
+
+    function renderSendWaiting(code) {
+        openTransferOverlay(`
+            <div class="t-label">Send To Device</div>
+            <div class="t-code">${escapeHTML(formatCode(code))}</div>
+            <button class="mist-btn ghost" onclick="copyLink('${escapeJS(code)}')">Copy Code</button>
+            <div class="t-msg" style="margin-top:14px;">Enter this on your other device. Waiting…</div>
+            <button class="mist-btn danger" onclick="closeTransferOverlay()">Cancel</button>
+        `);
+    }
+
+    function pollForAck(code) {
+        transferDeadline = Date.now() + 5 * 60 * 1000; // 5 minute window
+        transferPollTimer = setInterval(async () => {
+            if (Date.now() > transferDeadline) {
+                clearInterval(transferPollTimer); transferPollTimer = null;
+                activeSendCode = null;
+                fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/payload`, { method: 'DELETE' }).catch(() => {});
+                openTransferOverlay(`
+                    <div class="t-label">Send To Device</div>
+                    <div class="t-msg">Code expired. Generate a new one to try again.</div>
+                    <button class="mist-btn" onclick="closeTransferOverlay()">Close</button>
+                `);
+                return;
+            }
+            try {
+                const res = await fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/ack`);
+                if (!res.ok) return; // no answer yet, keep waiting
+                const ack = (await res.text()).trim();
+                if (ack === 'accepted' || ack === 'declined') {
+                    clearInterval(transferPollTimer); transferPollTimer = null;
+                    activeSendCode = null;
+                    fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/payload`, { method: 'DELETE' }).catch(() => {});
+                    fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/ack`, { method: 'DELETE' }).catch(() => {});
+                    if (ack === 'accepted') {
+                        openTransferOverlay(`
+                            <div class="t-label">Send To Device</div>
+                            <div style="font-size:22px; margin-bottom:10px;">✅</div>
+                            <div class="t-msg">The other device accepted the transfer.</div>
+                            <button class="mist-btn" onclick="closeTransferOverlay()">Done</button>
+                        `);
+                    } else {
+                        openTransferOverlay(`
+                            <div class="t-label">Send To Device</div>
+                            <div class="t-msg">The other device declined the transfer.</div>
+                            <button class="mist-btn" onclick="closeTransferOverlay()">Close</button>
+                        `);
+                    }
+                }
+            } catch (e) { /* transient network hiccup — keep polling */ }
+        }, 2500);
+    }
+
+    window.startReceiveTransfer = () => {
+        openTransferOverlay(`
+            <div class="t-label">Receive From Device</div>
+            <input type="text" id="receive-code-input" placeholder="Paste code..." autocomplete="off">
+            <button class="mist-btn" onclick="submitReceiveCode()">Connect</button>
+            <button class="mist-btn ghost" onclick="closeTransferOverlay()">Cancel</button>
+        `);
+        setTimeout(() => {
+            const inp = document.getElementById('receive-code-input');
+            if (inp) { inp.focus(); inp.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitReceiveCode(); }); }
+        }, 50);
+    };
+
+    window.submitReceiveCode = async () => {
+        const inp = document.getElementById('receive-code-input');
+        const code = cleanCode(inp ? inp.value : '');
+        if (!code) return;
+        openTransferOverlay(`
+            <div class="t-label">Receive From Device</div>
+            <div class="t-spinner"></div>
+            <div class="t-msg">Looking up code…</div>
+        `);
+        try {
+            const res = await fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/payload`);
+            if (!res.ok) throw new Error('not found');
+            const data = JSON.parse(await res.text());
+            const linkCount = Array.isArray(data.library) ? data.library.length : 0;
+            const folderCount = Array.isArray(data.folders) ? data.folders.length : 0;
+            pendingTransferData = data;
+            pendingTransferCode = code;
+            openTransferOverlay(`
+                <div class="t-label">Incoming Transfer</div>
+                <div class="t-msg">${linkCount} link${linkCount === 1 ? '' : 's'} and ${folderCount} folder${folderCount === 1 ? '' : 's'} from another device.<br><br>This replaces everything currently in this vault.</div>
+                <button class="mist-btn" onclick="acceptTransfer()">Accept</button>
+                <button class="mist-btn ghost" onclick="declineTransfer()">Decline</button>
+            `);
+        } catch (e) {
+            openTransferOverlay(`
+                <div class="t-label">Receive From Device</div>
+                <div class="t-msg err">Code not found or expired.</div>
+                <button class="mist-btn" onclick="closeTransferOverlay()">Close</button>
+            `);
+        }
+    };
+
+    window.acceptTransfer = async () => {
+        if (!pendingTransferData) return;
+        library = (pendingTransferData.library || []).map(i => ({ tags: [], visits: 0, lastOpened: 0, ...i }));
+        folders = (pendingTransferData.folders || []).map(f => f.id ? f : { id: 'f_' + Math.random().toString(36).slice(2, 10), name: f.name });
+        openFolders = Array.isArray(pendingTransferData.openFolders) ? pendingTransferData.openFolders : [];
+        localStorage.setItem('cl_vF_openFolders', JSON.stringify(openFolders));
+        sync();
+        const code = pendingTransferCode;
+        try { await fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/ack`, { method: 'POST', body: 'accepted' }); } catch (e) {}
+        pendingTransferData = null; pendingTransferCode = null;
+        document.getElementById('transfer-overlay').classList.remove('show');
+        showToast('Vault updated from other device');
+    };
+
+    window.declineTransfer = async () => {
+        const code = pendingTransferCode;
+        if (code) {
+            try { await fetch(`${KVDB_BASE}/${encodeURIComponent(code)}/ack`, { method: 'POST', body: 'declined' }); } catch (e) {}
+        }
+        pendingTransferData = null; pendingTransferCode = null;
+        document.getElementById('transfer-overlay').classList.remove('show');
+        showToast('Transfer declined');
+    };
+});
+</script>
+</body>
+</html>
